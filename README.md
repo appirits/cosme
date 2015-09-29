@@ -1,8 +1,11 @@
 # Cosme
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/cosme`. To experiment with that code, run `bin/console` for an interactive prompt.
+[![Build Status](https://img.shields.io/travis/appirits/cosme.svg?style=flat-square)](http://travis-ci.org/appirits/cosme)
+[![Code Climate](https://img.shields.io/codeclimate/github/appirits/cosme.svg?style=flat-square)](https://codeclimate.com/github/appirits/cosme)
+[![Dependency Status](https://img.shields.io/gemnasium/appirits/cosme.svg?style=flat-square)](https://gemnasium.com/appirits/cosme)
+[![Gem Version](https://img.shields.io/gem/v/cosme.svg?style=flat-square)](https://rubygems.org/gems/cosme)
 
-TODO: Delete this and the text above, and describe your gem
+Cosme is a simple solution to customize views of any template engine in your Ruby on Rails application.
 
 ## Installation
 
@@ -22,7 +25,63 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+1. Require a script in your `app/assets/javascripts/application.coffee`:
+
+  ```coffee
+  #= require cosme
+  ```
+
+2. Use the helper method in your views.
+
+  ```erb
+  <%= cosmeticize %>
+  ```
+
+3. Create a cosmetic file into `app/cosmetics`.
+
+
+## Example
+
+Inserts html to all elements of .example:
+
+```ruby
+# app/cosmetics/after_example.rb
+Cosme.define(
+  target: '.example',
+  action: :after
+)
+```
+
+```erb
+<%# app/cosmetics/after_example.html.erb %>
+<h2>After Example</h2>
+```
+
+```erb
+<%# app/views/layouts/application.html.erb %>
+<html>
+  <head>
+    <title>Example</title>
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+    <%= javascript_include_tag 'application'%>
+  </head>
+  <body>
+    <%= cosmeticize %>
+    <div class="example">
+      <h1>Example</h1>
+    </div>
+  </body>
+</html>
+```
+
+The result of the above:
+
+```html
+<div class="example">
+  <h1>Example</h1>
+</div>
+<h2>After Example</h2>
+```
 
 ## Development
 
@@ -32,10 +91,8 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/cosme.
-
+Bug reports and pull requests are welcome on GitHub at https://github.com/appirits/cosme.
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
