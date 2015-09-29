@@ -1,7 +1,7 @@
 require 'action_view'
 require 'coffee-rails'
 
-require "cosme/version"
+require 'cosme/version'
 require 'cosme/helpers'
 require 'cosme/engine'
 
