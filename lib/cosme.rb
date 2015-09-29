@@ -2,6 +2,8 @@ require 'action_view'
 require 'coffee-rails'
 
 require "cosme/version"
+require 'cosme/helpers'
+require 'cosme/engine'
 
 module Cosme
   class << self
@@ -23,27 +25,6 @@ module Cosme
     def all
       return [] unless @cosmetics
       @cosmetics.values
-    end
-  end
-
-  module Helpers
-    def cosmeticize
-      Cosme.all.map do |cosmetic|
-        content = cosmetic[:render] ? render(cosmetic[:render]) : render
-        content_tag(:div, nil, class: 'cosmetic', data: cosmetic.except(:render).merge(content: content))
-      end.join.html_safe
-    end
-  end
-
-  class Engine < ::Rails::Engine
-    config.to_prepare do
-      Dir.glob(Rails.root.join('app/cosmetics/**/*.rb')).each do |c|
-        require_dependency(c)
-      end
-    end
-
-    ActiveSupport.on_load(:action_view) do
-      ActionView::Base.send(:include, Cosme::Helpers)
     end
   end
 end
