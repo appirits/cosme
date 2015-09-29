@@ -10,9 +10,7 @@ module Cosme
     def define(cosmetic)
       caller_path = caller_locations(1, 1)[0].path
 
-      render_options = cosmetic[:render] || {}
-      render_options[:file] ||= default_file_path_for(caller_path) if render_options
-      cosmetic[:render] = render_options
+      cosmetic[:render] = { file: default_file_path_for(caller_path) } unless cosmetic[:render]
 
       @cosmetics ||= {}
       @cosmetics[caller_path] = cosmetic
