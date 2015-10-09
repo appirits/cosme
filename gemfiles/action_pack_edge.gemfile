@@ -1,0 +1,5 @@
+eval File.read(File.expand_path('../common.gemfile', __FILE__))
+
+git 'git://github.com/rails/rails.git' do
+  gem 'actionpack'
+end

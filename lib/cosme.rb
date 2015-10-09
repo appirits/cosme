@@ -3,6 +3,7 @@ require 'coffee-rails'
 
 require 'cosme/version'
 require 'cosme/helpers'
+require 'cosme/middleware'
 require 'cosme/engine'
 
 module Cosme
@@ -23,6 +24,14 @@ module Cosme
     def all
       return [] unless @cosmetics
       @cosmetics.values
+    end
+
+    def disable_auto_cosmeticize!
+      @disable_auto_cosmeticize = true
+    end
+
+    def auto_cosmeticize?
+      @disable_auto_cosmeticize ? false : true
     end
   end
 end

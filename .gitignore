@@ -4,6 +4,10 @@
 /_yardoc/
 /coverage/
 /doc/
+/gemfiles/.bundle/
+/gemfiles/*.gemfile.lock
 /pkg/
 /spec/reports/
+/test/dummy/log/
 /tmp/
+/vendor/
