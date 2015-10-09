@@ -1,4 +1,17 @@
-language: ruby
+language:
+  - ruby
 rvm:
+  - 2.1.5
   - 2.2.0
-before_install: gem install bundler -v 1.10.6
+  - ruby-head
+gemfile:
+  - gemfiles/action_pack_40.gemfile
+  - gemfiles/action_pack_41.gemfile
+  - gemfiles/action_pack_42.gemfile
+  - gemfiles/action_pack_edge.gemfile
+before_install:
+  - gem install bundler -v 1.10.6
+matrix:
+  allow_failures:
+    - rvm: ruby-head
+    - gemfile: gemfiles/action_pack_edge.gemfile
