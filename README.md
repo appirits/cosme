@@ -31,14 +31,7 @@ Or install it yourself as:
   #= require cosme
   ```
 
-2. Use the helper method in your views.
-
-  ```erb
-  <%= cosmeticize %>
-  ```
-
-3. Create a cosmetic file into `app/cosmetics`.
-
+2. Create a cosmetic file into `app/cosmetics`.
 
 ## Example
 
@@ -66,7 +59,6 @@ Cosme.define(
     <%= javascript_include_tag 'application'%>
   </head>
   <body>
-    <%= cosmeticize %>
     <div class="example">
       <h1>Example</h1>
     </div>
@@ -81,6 +73,14 @@ The result of the above:
   <h1>Example</h1>
 </div>
 <h2>After Example</h2>
+```
+
+## Troubleshooting
+
+If the cosmetic does not work, please call `Cosme.disable_auto_cosmeticize!` and the folloing helper method in your view file.
+
+```erb
+<%= cosmeticize %>
 ```
 
 ## Development
