@@ -29,12 +29,8 @@ module Cosme
     def all_for(controller)
       return all if controller.blank?
 
-      all.select do |option|
-        routes = option[:routes]
-        next true unless routes
-        next false if routes[:controller].present? && controller.controller_path != routes[:controller].to_s
-        next false if routes[:action].present? && controller.action_name != routes[:action].to_s
-        true
+      all.select do |cosmetic|
+        routes_match?(controller, cosmetic[:routes])
       end
     end
 
@@ -44,6 +40,33 @@ module Cosme
 
     def auto_cosmeticize?
       @disable_auto_cosmeticize ? false : true
+    end
+
+    private
+
+    def routes_match?(controller, routes)
+      return true unless routes
+      return false unless routes_match_action?(controller, routes)
+      return false unless routes_match_controller?(controller, routes)
+      true
+    end
+
+    def routes_match_action?(controller, routes)
+      return true unless routes[:action]
+      if routes[:action].is_a? Array
+        routes[:action].map(&:to_s).include? controller.action_name
+      else
+        controller.action_name == routes[:action].to_s
+      end
+    end
+
+    def routes_match_controller?(controller, routes)
+      return true unless routes[:controller]
+      if routes[:controller].is_a? Array
+        routes[:controller].map(&:to_s).include? controller.controller_path
+      else
+        controller.controller_path == routes[:controller].to_s
+      end
     end
   end
 end

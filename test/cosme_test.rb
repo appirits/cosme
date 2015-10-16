@@ -40,8 +40,20 @@ class CosmeTest < ActiveSupport::TestCase
     assert_equal Cosme.all_for(dummy_controller), cosmetics.values
   end
 
+  test '#all_for returns the values of @cosmetics when match the one of controllers' do
+    Cosme.define(routes: { controller: [:dummy, :foo, :bar] })
+    cosmetics = Cosme.instance_variable_get(:@cosmetics)
+    assert_equal Cosme.all_for(dummy_controller), cosmetics.values
+  end
+
   test '#all_for returns the values of @cosmetics when match action' do
-    Cosme.define(routes: { controller: :dummy })
+    Cosme.define(routes: { action: :index })
+    cosmetics = Cosme.instance_variable_get(:@cosmetics)
+    assert_equal Cosme.all_for(dummy_controller), cosmetics.values
+  end
+
+  test '#all_for returns the values of @cosmetics when match the one of actions' do
+    Cosme.define(routes: { action: [:index, :show] })
     cosmetics = Cosme.instance_variable_get(:@cosmetics)
     assert_equal Cosme.all_for(dummy_controller), cosmetics.values
   end
