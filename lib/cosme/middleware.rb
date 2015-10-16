@@ -59,8 +59,17 @@ module Cosme
 
     # Use in Cosme::Helpers#cosmeticize
     def render(options = {})
-      renderer = ActionView::Base.new(ActionController::Base.view_paths)
-      renderer.render options
+      view_context = ActionView::Base.new(ActionController::Base.view_paths, assigns, controller)
+      view_context.render(options)
+    end
+
+    def controller
+      @env['action_controller.instance']
+    end
+
+    def assigns
+      return {} unless controller
+      controller.view_context.assigns
     end
 
     def controller
