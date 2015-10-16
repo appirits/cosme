@@ -34,6 +34,21 @@ module Cosme
       refute page.has_selector? 'div[class="cosmetic"]'
     end
 
+    test 'can uses a url helper' do
+      Cosme.define(render: { inline: '<%= root_path %>' })
+      visit '/'
+      assert page.has_selector? %(div[data-content="#{root_path}"])
+    end
+
+    test 'assigns a instance variable' do
+      DummyController.class_eval do
+        before_action { @variable_for_assign_test = 'variable_for_assign_test' }
+      end
+      Cosme.define(render: default_render_options)
+      get '/'
+      assert assigns(:variable_for_assign_test)
+    end
+
     private
 
     def default_render_options
