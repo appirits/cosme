@@ -8,6 +8,8 @@ module Cosme
     end
 
     def call(env)
+      @env = env
+
       response = @app.call(env)
       return response unless Cosme.auto_cosmeticize?
 
@@ -28,7 +30,8 @@ module Cosme
     end
 
     def insert_cosmeticize_tag(html)
-      html.sub(/<body[^>]*>/) { [$~, cosmeticize].join }
+      cosmeticizer = cosmeticize(controller)
+      html.sub(/<body[^>]*>/) { [$~, cosmeticizer].join }
     end
 
     def new_response(response, new_html)
@@ -56,8 +59,54 @@ module Cosme
 
     # Use in Cosme::Helpers#cosmeticize
     def render(options = {})
-      renderer = ActionView::Base.new(ActionController::Base.view_paths)
-      renderer.render options
+      _helpers = helpers
+      view_context = ActionView::Base.new(ActionController::Base.view_paths, assigns, controller)
+      view_context.class_eval { _helpers.each { |h| include h } }
+      view_context.render(options)
+    end
+
+    def controller
+      return unless @env
+      @env['action_controller.instance']
+    end
+
+    def assigns
+      return {} unless controller
+      controller.view_context.assigns
+    end
+
+    def helpers
+      [
+        controller.try(:_helpers),
+        Rails.application.routes.url_helpers,
+        engines_helpers
+      ].compact
+    end
+
+    def engines_helpers
+      wodule = Module.new
+
+      isolated_engine_instances.each do |instance|
+        name = instance.engine_name
+
+        wodule.class_eval do
+          define_method "_#{name}" do
+            instance.routes.url_helpers
+          end
+        end
+
+        wodule.class_eval(<<-RUBY, __FILE__, __LINE__ + 1)
+          def #{name}
+            @_#{name} ||= _#{name}
+          end
+        RUBY
+      end
+
+      wodule
+    end
+
+    def isolated_engine_instances
+      Rails::Engine.subclasses.map(&:instance).select(&:isolated?)
     end
   end
 end

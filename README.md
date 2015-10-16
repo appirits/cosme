@@ -33,6 +33,26 @@ Or install it yourself as:
 
 2. Create a cosmetic file into `app/cosmetics`.
 
+## Using Cosme#define
+
+* `:routes` - The option to apply a cosmetic only on a specific route.
+
+  * `:controller` - Controller path. eg: 'admin/users' when called in Admin::UsersController. if you not set this option, apply a cosmetic in all controllers.
+
+  * `:routes` - Action name. eg: 'index' when called in Admin::UsersController#index. if you not set this option, apply a cosmetic in all actions.
+
+* `:target` - String of [jQuery Selectors](https://api.jquery.com/category/selectors/).
+
+* `:action` - One of the following:
+
+  * `:after` - Inserts after all elements that match the supplied selector.
+
+  * `:before` - Inserts before all elements that match the supplied selector.
+
+  * `:replace` - Replaces all elements that match the supplied selector.
+
+* `:render` - Argument for ActionView::Base#render.
+
 ## Example
 
 Inserts html to all elements of .example:
