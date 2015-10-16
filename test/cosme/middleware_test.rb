@@ -157,6 +157,90 @@ module Cosme
       assert_equal @subject.send(:render, inline: html), html
     end
 
+    test '#controller returns nil when @env is nil' do
+      refute @subject.send(:controller)
+    end
+
+    test '#controller returns the controller instance from @env' do
+      controller = 'CONTROLLER'
+      @subject.instance_variable_set(:@env, 'action_controller.instance' => controller)
+      assert_equal @subject.send(:controller), controller
+    end
+
+    test '#assigns returns assings' do
+      assigns = 'ASSINGS'
+
+      view_context = MiniTest::Mock.new
+      view_context.expect(:assigns, assigns)
+
+      controller = MiniTest::Mock.new
+      controller.expect(:view_context, view_context)
+
+      @subject.stub(:controller, controller) do
+        assert_equal @subject.send(:assigns), assigns
+      end
+    end
+
+    test '#assigns returns assings when controller is nil' do
+      @subject.stub(:controller, nil) do
+        assert_instance_of Hash, @subject.send(:assigns)
+        assert_empty @subject.send(:assigns)
+      end
+    end
+
+    test '#helpers includes url helpers' do
+      @subject.stub(:controller, nil) do
+        @subject.stub(:engines_helpers, nil) do
+          assert_includes @subject.send(:helpers), Rails.application.routes.url_helpers
+        end
+      end
+    end
+
+    test '#helpers includes controller helpers' do
+      controller_helpers = 'CONTROLLER_HELPERS'
+
+      controller = MiniTest::Mock.new
+      controller.expect(:try, controller_helpers, [:_helpers])
+
+      @subject.stub(:controller, controller) do
+        @subject.stub(:engines_helpers, nil) do
+          assert_includes @subject.send(:helpers), controller_helpers
+        end
+      end
+    end
+
+    test '#helpers includes engines helpers' do
+      engines_helpers = 'ENGINES_HELPERS'
+      @subject.stub(:controller, nil) do
+        @subject.stub(:engines_helpers, engines_helpers) do
+          assert_includes @subject.send(:helpers), engines_helpers
+        end
+      end
+    end
+
+    test '#engines_helpers returns a new module which includes a mounted helper' do
+      routes = 'ROUTES'
+      engine_name = 'dummy_engine'
+
+      engine_instance = MiniTest::Mock.new
+      engine_instance.expect(:routes, routes)
+      engine_instance.expect(:engine_name, engine_name)
+
+      @subject.stub(:isolated_engine_instances, [engine_instance]) do
+        wodule = @subject.send(:engines_helpers)
+        klass = Class.new
+        klass.send(:extend, wodule)
+        assert_equal klass.send(engine_name), routes
+      end
+    end
+
+    test '#isolated_engine_instances returns instances of the isolated engine' do
+      engine = Class.new(Rails::Engine)
+      engine.stub(:isolated?, true) do
+        assert_includes @subject.send(:isolated_engine_instances), engine.instance
+      end
+    end
+
     private
 
     def app(options = {})
