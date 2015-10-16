@@ -59,11 +59,14 @@ module Cosme
 
     # Use in Cosme::Helpers#cosmeticize
     def render(options = {})
+      _helpers = helpers
       view_context = ActionView::Base.new(ActionController::Base.view_paths, assigns, controller)
+      view_context.class_eval { _helpers.each { |h| include h } }
       view_context.render(options)
     end
 
     def controller
+      return unless @env
       @env['action_controller.instance']
     end
 
@@ -72,9 +75,39 @@ module Cosme
       controller.view_context.assigns
     end
 
-    def controller
-      return unless @env
-      @env['action_controller.instance']
+    def helpers
+      [
+        controller.try(:_helpers),
+        Rails.application.routes.url_helpers,
+        engines_helpers
+      ].compact
+    end
+
+    def engines_helpers
+      wodule = Module.new
+
+      isolated_engine_instances.each do |instance|
+        routes = instance.routes
+        name = instance.engine_name
+
+        wodule.class_eval do
+          define_method "_#{name}" do
+            routes
+          end
+        end
+
+        wodule.class_eval(<<-RUBY, __FILE__, __LINE__ + 1)
+          def #{name}
+            @_#{name} ||= _#{name}
+          end
+        RUBY
+      end
+
+      wodule
+    end
+
+    def isolated_engine_instances
+      Rails::Engine.subclasses.map(&:instance).select(&:isolated?)
     end
   end
 end
