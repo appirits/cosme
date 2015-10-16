@@ -219,8 +219,11 @@ module Cosme
     end
 
     test '#engines_helpers returns a new module which includes a mounted helper' do
-      routes = 'ROUTES'
+      url_helpers = 'URL_HELPERS'
       engine_name = 'dummy_engine'
+
+      routes = MiniTest::Mock.new
+      routes.expect(:url_helpers, url_helpers)
 
       engine_instance = MiniTest::Mock.new
       engine_instance.expect(:routes, routes)
@@ -230,7 +233,7 @@ module Cosme
         wodule = @subject.send(:engines_helpers)
         klass = Class.new
         klass.send(:extend, wodule)
-        assert_equal klass.send(engine_name), routes
+        assert_equal klass.send(engine_name), url_helpers
       end
     end
 

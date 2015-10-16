@@ -87,12 +87,11 @@ module Cosme
       wodule = Module.new
 
       isolated_engine_instances.each do |instance|
-        routes = instance.routes
         name = instance.engine_name
 
         wodule.class_eval do
           define_method "_#{name}" do
-            routes
+            instance.routes.url_helpers
           end
         end
 
