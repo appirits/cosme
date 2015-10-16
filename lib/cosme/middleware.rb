@@ -8,6 +8,8 @@ module Cosme
     end
 
     def call(env)
+      @env = env
+
       response = @app.call(env)
       return response unless Cosme.auto_cosmeticize?
 
@@ -28,7 +30,8 @@ module Cosme
     end
 
     def insert_cosmeticize_tag(html)
-      html.sub(/<body[^>]*>/) { [$~, cosmeticize].join }
+      cosmeticizer = cosmeticize(controller)
+      html.sub(/<body[^>]*>/) { [$~, cosmeticizer].join }
     end
 
     def new_response(response, new_html)
@@ -58,6 +61,11 @@ module Cosme
     def render(options = {})
       renderer = ActionView::Base.new(ActionController::Base.view_paths)
       renderer.render options
+    end
+
+    def controller
+      return unless @env
+      @env['action_controller.instance']
     end
   end
 end

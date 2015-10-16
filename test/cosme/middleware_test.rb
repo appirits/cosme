@@ -21,7 +21,8 @@ module Cosme
       app = @subject.instance_variable_get(:@app)
       app.stub(:call, response) do
         Cosme.stub(:auto_cosmeticize?, false) do
-          assert_equal @subject.call(nil), response
+          env = {}
+          assert_equal @subject.call(env), response
         end
       end
     end
@@ -31,7 +32,8 @@ module Cosme
       app = @subject.instance_variable_get(:@app)
       app.stub(:call, response) do
         @subject.stub(:response_to_html, nil) do
-          assert_equal @subject.call(nil), response
+          env = {}
+          assert_equal @subject.call(env), response
         end
       end
     end
@@ -44,7 +46,8 @@ module Cosme
         @subject.stub(:response_to_html, html) do
           new_response = 'NEW RESPONSE'
           @subject.stub(:new_response, new_response) do
-            assert_equal @subject.call(nil), new_response
+            env = {}
+            assert_equal @subject.call(env), new_response
           end
         end
       end

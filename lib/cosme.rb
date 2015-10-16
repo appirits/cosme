@@ -26,6 +26,18 @@ module Cosme
       @cosmetics.values
     end
 
+    def all_for(controller)
+      return all if controller.blank?
+
+      all.select do |option|
+        routes = option[:routes]
+        next true unless routes
+        next false if routes[:controller].present? && controller.controller_path != routes[:controller].to_s
+        next false if routes[:action].present? && controller.action_name != routes[:action].to_s
+        true
+      end
+    end
+
     def disable_auto_cosmeticize!
       @disable_auto_cosmeticize = true
     end
