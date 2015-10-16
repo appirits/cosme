@@ -24,6 +24,6 @@ class Cosme
       when 'after'
         $target.after(content)
       when 'replace'
-        $target.html(content)
+        $target.replaceWith(content)
       else
         false
