@@ -89,6 +89,28 @@ module Cosme
       end
     end
 
+    test '#insert_cosme_js inserts the script tag' do
+      script_tag = '<script />'
+
+      view_context = MiniTest::Mock.new
+      view_context.expect(:javascript_include_tag, script_tag, ['cosme', Hash])
+
+      controller = MiniTest::Mock.new
+      controller.expect(:try, view_context, [:view_context])
+
+      @subject.stub(:controller, controller) do
+        html = '<head><title>Example</title></head>'
+        assert_match /#{script_tag}/, @subject.send(:insert_cosme_js, html)
+      end
+    end
+
+    test '#insert_cosme_js returns the original HTML when controller is nil' do
+      @subject.stub(:controller, nil) do
+        html = '<head><title>Example</title></head>'
+        assert_equal html, @subject.send(:insert_cosme_js, html)
+      end
+    end
+
     test '#new_response builds a response with a new body' do
       html = '<h1>Example</h1>'
       response = build_response(body: [html])

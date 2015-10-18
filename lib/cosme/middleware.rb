@@ -17,6 +17,7 @@ module Cosme
       return response unless html
 
       new_html = insert_cosmeticize_tag(html)
+      new_html = insert_cosme_js(new_html)
       new_response(response, new_html)
     end
 
@@ -32,6 +33,13 @@ module Cosme
     def insert_cosmeticize_tag(html)
       cosmeticizer = cosmeticize(controller)
       html.sub(/<body[^>]*>/) { [$~, cosmeticizer].join }
+    end
+
+    def insert_cosme_js(html)
+      view_context = controller.try(:view_context)
+      return html unless view_context
+      script = view_context.javascript_include_tag('cosme', 'data-turbolinks-track' => true)
+      html.sub(/<\/head>/) { [script, $~].join }
     end
 
     def new_response(response, new_html)
