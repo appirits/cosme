@@ -55,6 +55,8 @@ Or install it yourself as:
 
 ## Example
 
+### Cosmetic + View (2 files)
+
 Inserts html to all elements of .example:
 
 ```ruby
@@ -93,6 +95,46 @@ The result of the above:
   <h1>Example</h1>
 </div>
 <h2>After Example</h2>
+```
+
+### Cosmetic (1 file)
+
+Replaces all elements of .example:
+
+```ruby
+# app/cosmetics/replace_example.rb
+Cosme.define(
+  target: '.example',
+  action: :replace
+).render(inline: <<-'SLIM', type: :slim)
+  .example
+    h1
+      | Replace Example
+SLIM
+```
+
+```erb
+<%# app/views/layouts/application.html.erb %>
+<html>
+  <head>
+    <title>Example</title>
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+    <%= javascript_include_tag 'application'%>
+  </head>
+  <body>
+    <div class="example">
+      <h1>Example</h1>
+    </div>
+  </body>
+</html>
+```
+
+The result of the above:
+
+```html
+<div class="example">
+  <h1>Replace Example</h1>
+</div>
 ```
 
 ## Troubleshooting
