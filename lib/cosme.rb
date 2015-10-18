@@ -5,6 +5,7 @@ require 'cosme/version'
 require 'cosme/helpers'
 require 'cosme/middleware'
 require 'cosme/engine'
+require 'cosme/cosmetic'
 
 module Cosme
   class << self
@@ -15,6 +16,8 @@ module Cosme
 
       @cosmetics ||= {}
       @cosmetics[caller_path] = cosmetic
+
+      Cosme::Cosmetic.new(cosmetic)
     end
 
     def default_file_path_for(caller_path)
