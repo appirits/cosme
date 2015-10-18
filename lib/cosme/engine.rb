@@ -13,5 +13,7 @@ module Cosme
     ActiveSupport.on_load(:action_view) do
       ActionView::Base.send(:include, Cosme::Helpers)
     end
+
+    config.assets.precompile += %w( cosme.js ) if config.respond_to? :assets
   end
 end
