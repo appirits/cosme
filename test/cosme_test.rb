@@ -17,6 +17,11 @@ class CosmeTest < ActiveSupport::TestCase
     refute_empty cosmetics
   end
 
+  test '.define returns a new instance' do
+    cosme = Cosme.define(target: '.example', action: :before)
+    assert_instance_of Cosme::Cosmetic, cosme
+  end
+
   test '.default_file_path_for returns a path without extension' do
     caller_path = 'path/to/file.rb'
     assert_equal Cosme.default_file_path_for(caller_path), 'path/to/file'
