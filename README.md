@@ -25,15 +25,9 @@ Or install it yourself as:
 
 ## Usage
 
-1. Require a script in your `app/assets/javascripts/application.coffee`:
+Create a cosmetic file into `app/cosmetics`, and call `Cosme#define` method in the cosmetic file.
 
-  ```coffee
-  #= require cosme
-  ```
-
-2. Create a cosmetic file into `app/cosmetics`.
-
-## Using Cosme#define
+### Cosme#define
 
 * `:routes` - The option to apply a cosmetic only on a specific route.
 
@@ -101,6 +95,12 @@ If the cosmetic does not work, please call `Cosme.disable_auto_cosmeticize!` and
 
 ```erb
 <%= cosmeticize %>
+```
+
+And require a script in your `app/assets/javascripts/application.coffee`:
+
+```coffee
+#= require cosme
 ```
 
 ## Development
