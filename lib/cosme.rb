@@ -7,6 +7,8 @@ require 'cosme/middleware'
 require 'cosme/engine'
 
 module Cosme
+  class CosmeticNotFound < StandardError; end
+
   class << self
     def define(cosmetic)
       caller_path = caller_locations(1, 1)[0].path
@@ -15,6 +17,15 @@ module Cosme
 
       @cosmetics ||= {}
       @cosmetics[caller_path] = cosmetic
+
+      self
+    end
+
+    def render(options)
+      caller_path = caller_locations(1, 1)[0].path
+      cosmetic = @cosmetics[caller_path] if @cosmetics
+      raise Cosme::CosmeticNotFound, 'Cosmetic is not found. Please call `Cosme#define` method first.' unless cosmetic
+      cosmetic[:render] = options
     end
 
     def default_file_path_for(caller_path)
