@@ -33,7 +33,7 @@ Create a cosmetic file into `app/cosmetics`, and call `Cosme#define` method in t
 
   * `:controller` - Controller path. eg: 'admin/users' when called in Admin::UsersController. if you not set this option, apply a cosmetic in all controllers.
 
-  * `:action` - Action name. eg: 'index' when called in Admin::UsersController#index. if you not set this option, apply a cosmetic in all actions.
+  * `:action` - Action name. eg: 'index' when called in \*Controller#index. if you not set this option, apply a cosmetic in all actions.
 
 * `:target` - String of [jQuery Selectors](https://api.jquery.com/category/selectors/).
 
