@@ -11,11 +11,11 @@ class Cosme
 
   create: ($cosmetic) ->
     content = $cosmetic.data('content')
-    return false if content.length <= 0
+    return @warning('"data-content" is empty.', $cosmetic) if content.length <= 0
 
     target = $cosmetic.data('target')
     $target = $(target)
-    return false if $target.length <= 0
+    return @warning("Target \"#{target}\" is not found.", $cosmetic) if $target.length <= 0
 
     action = $cosmetic.data('action')
     switch action
@@ -26,4 +26,13 @@ class Cosme
       when 'replace'
         $target.replaceWith(content)
       else
-        false
+        @warning("Undefined action \"#{action}\".", $cosmetic)
+
+  warning: (message, $element = null) ->
+    return unless window.console
+    return unless typeof window.console.warn is 'function'
+
+    messages = ["Cosme warning: #{message}"]
+    messages.push($element) if $element
+
+    console.warn.apply(console, messages)
